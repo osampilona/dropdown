@@ -5,14 +5,17 @@
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
+    "@adobe/react-spectrum": "^3.34.1",
     "@react-aria/button": "^3.9.3",
     "@react-aria/menu": "^3.13.1",
+    "@react-spectrum/menu": "^3.18.1",
     "@react-spectrum/utils": "^3.11.5",
     "@react-stately/collections": "^3.10.5",
     "@react-stately/data": "^3.11.2",
     "@react-stately/menu": "^3.6.1",
     "@react-stately/tree": "^3.7.6",
     "react": "18.2.0",
+    "react-aria-components": "^1.1.1",
     "react-dom": "18.2.0",
     "react-scripts": "^5.0.1"
   },

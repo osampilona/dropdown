@@ -34,7 +34,7 @@ export type SapphireMenuProps<T extends object> = AriaMenuProps<T> &
       },
       isOpen: boolean
     ) => React.ReactNode;
-    onAction: (key: Key) => void;
+    onAction?: (key: Key) => void;
   };
 
 interface MenuItemProps<T> {

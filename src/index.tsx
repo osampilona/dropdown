@@ -1,34 +1,23 @@
-import { useState, StrictMode, useEffect } from "react";
+import { StrictMode, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Menu, Item } from "./Menu";
+import { SubmenuTrigger } from "@react-spectrum/menu";
 
 const App = () => {
-  const [activeKey, setActiveKey] = useState("");
-  const [submenuVisible, setSubmenuVisible] = useState(false);
-
-  useEffect(() => {
-    console.log("Active key is now:", activeKey);
-    // Recalculate moveSubItems here if needed or perform actions based on the new activeKey
-    if (activeKey === "move") {
-      const newMoveSubItems = [
-        <Item key="move-to-shared">Shared</Item>,
-        <Item key="move-to-desktop">Desktop</Item>,
-        <Item key="move-to-favorite">Favorite</Item>,
-      ];
-      console.log("moveSubItems:", newMoveSubItems);
-    }
-  }, [activeKey]);
-
-  const handleMenuAction = (key: any) => {
-    console.log(`Handling action for key: ${key}`);
-    setActiveKey(key);
-
-    // Toggle submenu visibility only for "move"
+  const handleAction = (key: any) => {
     if (key === "move") {
-      setSubmenuVisible(!submenuVisible);
-      console.log("visible");
-    } else {
-      setSubmenuVisible(false);
+      // Define your list items
+      const items = [
+        { key: "move-to-shared", label: "Shared" },
+        { key: "move-to-desktop", label: "Desktop" },
+        { key: "move-to-favorite", label: "Favorite" },
+      ];
+
+      // Convert the list of items into a string format
+      const itemsString = items.map((item) => `${item.label}`).join("\n");
+
+      // Display the string in an alert
+      alert(itemsString);
     }
   };
 
@@ -36,22 +25,26 @@ const App = () => {
     <StrictMode>
       <Menu
         renderTrigger={(props) => <button {...props}>Actions</button>}
-        onAction={handleMenuAction}
+        onAction={handleAction}
         shouldFlip={true}
       >
         <Item key="copy">Copy application</Item>
         <Item key="rename">Rename application</Item>
-        {/* "move" item with conditional rendering */}
-        <Item key="move" title="Move to">
-          {/* Render submenu items only if submenuVisible is true */}
-          {submenuVisible && (
-            <>
-              <Item key="move-to-shared">Shared</Item>
-              <Item key="move-to-desktop">Desktop</Item>
-              <Item key="move-to-favorite">Favorite</Item>
-            </>
-          )}
-        </Item>
+        <SubmenuTrigger>
+          <Item key="move" title="Move to">
+            Move to
+          </Item>
+          <Menu // Submenu with custom behavior
+            renderTrigger={(props) => (
+              <button onClick={() => handleAction("move")}>Move to...</button>
+            )} // Custom trigger for nested menu
+            shouldFlip={true} // Adjust as needed
+          >
+            <Item key="move-to-shared">Shared</Item>
+            <Item key="move-to-desktop">Desktop</Item>
+            <Item key="move-to-favorite">Favorite</Item>
+          </Menu>
+        </SubmenuTrigger>
         <Item key="delete">Delete application</Item>
       </Menu>
     </StrictMode>
@@ -60,5 +53,4 @@ const App = () => {
 
 const rootElement = document.getElementById("root") ?? document.body;
 const root = createRoot(rootElement);
-
 root.render(<App />);
