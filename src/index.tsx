@@ -1,26 +1,37 @@
-import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import {
+  ActionButton,
+  Menu,
+  Item,
+  MenuTrigger,
+  Provider,
+  defaultTheme,
+} from "@adobe/react-spectrum";
+import { SubmenuTrigger } from "@react-spectrum/menu";
 
-import { Menu, Item } from "./Menu";
+function App() {
+  return (
+    <Provider theme={defaultTheme} width={74}>
+      <MenuTrigger>
+        <ActionButton>Actions</ActionButton>
+        <Menu onAction={(key) => console.log(`Selected action: ${key}`)}>
+          <Item key="copy">Copy Application</Item>
+          <Item key="rename">Rename Application</Item>
+          <SubmenuTrigger>
+            <Item key="move">Move to</Item>
+            <Menu onAction={(key) => console.log(`Move to action: ${key}`)}>
+              <Item key="move-to-shared">Shared</Item>
+              <Item key="move-to-desktop">Desktop</Item>
+              <Item key="move-to-favorite">Favorite</Item>
+            </Menu>
+          </SubmenuTrigger>
+          <Item key="delete">Delete</Item>
+        </Menu>
+      </MenuTrigger>
+    </Provider>
+  );
+}
 
 const rootElement = document.getElementById("root") ?? document.body;
 const root = createRoot(rootElement);
-
-root.render(
-  <StrictMode>
-    <Menu
-      renderTrigger={(props) => <button {...props}>Actions</button>}
-      onAction={alert}
-      shouldFlip={false}
-    >
-      <Item key="copy">Copy application</Item>
-      <Item key="rename">Rename application</Item>
-      <Item key="move" title="Move to">
-        <Item key="move-to-shared">Shared</Item>
-        <Item key="move-to-desktop">Desktop</Item>
-        <Item key="move-to-favorite">Favorite</Item>
-      </Item>
-      <Item key="delete">Delete application</Item>
-    </Menu>
-  </StrictMode>
-);
+root.render(<App />);
