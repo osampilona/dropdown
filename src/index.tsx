@@ -1,7 +1,13 @@
 import { createRoot } from "react-dom/client";
-import { ActionButton, Menu, Item, MenuTrigger } from "@adobe/react-spectrum";
+import {
+  ActionButton,
+  Menu,
+  Item,
+  MenuTrigger,
+  Provider,
+  defaultTheme,
+} from "@adobe/react-spectrum";
 import { SubmenuTrigger } from "@react-spectrum/menu";
-import { Provider, defaultTheme } from "@adobe/react-spectrum";
 
 function App() {
   return (
