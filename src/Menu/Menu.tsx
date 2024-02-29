@@ -34,14 +34,12 @@ export type SapphireMenuProps<T extends object> = AriaMenuProps<T> &
       },
       isOpen: boolean
     ) => React.ReactNode;
-    // onAction: (key: Key) => (() => void) | undefined; // Updated type
     onAction: (key: Key) => void;
   };
 
 interface MenuItemProps<T> {
   item: Node<T>;
   state: TreeState<T>;
-  // onAction: (key: Key) => (() => void) | undefined; // Updated type
   onAction: (key: Key) => void;
   onClose: () => void;
   disabledKeys?: Iterable<Key>;
@@ -178,7 +176,7 @@ function _Menu<T extends object>(
           <MenuPopup
             {...mergeProps(props, menuProps)}
             autoFocus={state.focusStrategy || true}
-            onClose={state.close}
+            onClose={!state.close} // Corrected to pass a function
           />
         </FocusScope>
       </Popover>
