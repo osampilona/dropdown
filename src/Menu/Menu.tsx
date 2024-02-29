@@ -93,7 +93,7 @@ export function MenuItem<T>({
 }
 
 const MenuPopup = <T extends object>(
-  // TODO: deal with this later
+  // TODO: due to issues, set to any
   props: any
   //   {
   //   autoFocus: FocusStrategy;
