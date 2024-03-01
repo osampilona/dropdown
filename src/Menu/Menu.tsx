@@ -2,6 +2,7 @@ import React, {
   ButtonHTMLAttributes,
   Key,
   ReactElement,
+  RefObject,
   useLayoutEffect,
   useRef,
 } from "react";
@@ -29,21 +30,18 @@ import { useHover } from "@react-aria/interactions";
 export type SapphireMenuProps<T extends object> = AriaMenuProps<T> &
   MenuTriggerProps & {
     renderTrigger: (
-      props: ButtonHTMLAttributes<HTMLButtonElement> & {
-        ref?: React.RefObject<HTMLButtonElement>;
-      },
+      props: ButtonHTMLAttributes<Element> & { ref?: RefObject<any> },
       isOpen: boolean
     ) => React.ReactNode;
-    onAction?: (key: Key) => void;
+    shouldFlip?: boolean;
   };
 
 interface MenuItemProps<T> {
   item: Node<T>;
   state: TreeState<T>;
-  onAction: (key: Key) => void;
+  onAction?: (key: Key) => void;
   onClose: () => void;
   disabledKeys?: Iterable<Key>;
-  children?: React.ReactNode;
 }
 
 export function MenuItem<T>({
@@ -52,7 +50,6 @@ export function MenuItem<T>({
   onAction,
   disabledKeys,
   onClose,
-  children,
 }: MenuItemProps<T>): JSX.Element {
   const ref = React.useRef<HTMLLIElement>(null);
   const isDisabled = disabledKeys && [...disabledKeys].includes(item.key);
@@ -87,22 +84,23 @@ export function MenuItem<T>({
       )}
     >
       <p className={styles["sapphire-menu-item-overflow"]}>{item.rendered}</p>
-      {children}
     </li>
   );
 }
 
 const MenuPopup = <T extends object>(
-  // TODO: due to issues, set to any
-  props: any
-  //   {
-  //   autoFocus: FocusStrategy;
-  //   onClose: () => void;
-  // } & SapphireMenuProps<T>
+  props: {
+    autoFocus: FocusStrategy;
+    onClose: () => void;
+  } & SapphireMenuProps<T>
 ) => {
   const state = useTreeState({ ...props, selectionMode: "none" });
   const menuRef = useRef<HTMLUListElement>(null);
-  const { menuProps } = useMenu(props, state, menuRef);
+  const { menuProps } = useMenu(
+    props as unknown as AriaMenuProps<object>,
+    state,
+    menuRef
+  ); // Cast props to AriaMenuProps<object>
 
   return (
     <ul {...menuProps} ref={menuRef} className={styles["sapphire-menu"]}>
@@ -116,7 +114,7 @@ const MenuPopup = <T extends object>(
             item={item}
             state={state}
             onClose={props.onClose}
-            onAction={props.onAction}
+            onAction={props.onAction as (key: React.Key) => void} // Fix: Cast onAction prop to accept React.Key type
             disabledKeys={props.disabledKeys}
           />
         );
@@ -126,8 +124,7 @@ const MenuPopup = <T extends object>(
 };
 
 function _Menu<T extends object>(
-  // Here we extended props type with shouldFlip boolean
-  props: SapphireMenuProps<T> & { shouldFlip: boolean },
+  props: SapphireMenuProps<T>,
   ref: FocusableRef<HTMLButtonElement>
 ) {
   const { renderTrigger, shouldFlip = true } = props;
@@ -173,10 +170,10 @@ function _Menu<T extends object>(
         onClose={state.close}
       >
         <FocusScope>
-          <MenuPopup
+          <MenuPopup<T>
             {...mergeProps(props, menuProps)}
             autoFocus={state.focusStrategy || true}
-            onClose={!state.close} // Corrected to pass a function
+            onClose={() => !state.close} // Updated to pass a function
           />
         </FocusScope>
       </Popover>
@@ -185,6 +182,6 @@ function _Menu<T extends object>(
 }
 
 export const Menu = React.forwardRef(_Menu) as <T extends object>(
-  props: SapphireMenuProps<T> & { shouldFlip: boolean },
+  props: SapphireMenuProps<T>,
   ref: FocusableRef<HTMLButtonElement>
 ) => ReactElement;
