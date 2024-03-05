@@ -14,12 +14,12 @@ function App() {
     <Provider theme={defaultTheme} width={74}>
       <MenuTrigger>
         <ActionButton>Actions</ActionButton>
-        <Menu onAction={(key) => console.log(`Selected action: ${key}`)}>
+        <Menu onAction={(key) => key}>
           <Item key="copy">Copy Application</Item>
           <Item key="rename">Rename Application</Item>
           <SubmenuTrigger>
             <Item key="move">Move to</Item>
-            <Menu onAction={(key) => console.log(`Move to action: ${key}`)}>
+            <Menu onAction={(key) => key}>
               <Item key="move-to-shared">Shared</Item>
               <Item key="move-to-desktop">Desktop</Item>
               <Item key="move-to-favorite">Favorite</Item>
